@@ -12,7 +12,7 @@ on:
         type: string
 
 env:
-  APP_NAME: 139share
+  APP_NAME: share
   DOCKERHUB_REPO: tianjian518/139share
   MODULE_NAME: github.com/xxcheng123/cloudpan189-share
 
@@ -37,7 +37,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
         # 需在仓库 Settings → Secrets 配置：
-        #   DOCKERHUB_USERNAME = tianjian518
+        #   DOCKERHUB_USERNAME = <Docker Hub 用户名>
         #   DOCKERHUB_TOKEN    = Docker Hub Access Token
 
       - name: 📊 Generate build metadata
@@ -169,7 +169,7 @@ jobs:
           echo ""
           echo "# Docker Compose 示例"
           echo "services:"
-          echo "  139share:"
+          echo "  app:"
           echo "    image: ${{ env.DOCKERHUB_REPO }}:${{ env.APP_VERSION }}"
           echo "    container_name: ${{ env.APP_NAME }}"
           echo "    ports:"
