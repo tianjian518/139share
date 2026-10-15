@@ -1,0 +1,21 @@
+name: tmp-dockerhub-meta
+
+on:
+  workflow_dispatch:
+
+jobs:
+  clean:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean DockerHub description
+        env:
+          DH_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          DH_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          curl -s -o /tmp/resp.json -w "HTTP=%{http_code}\n" \
+            -X PATCH "https://hub.docker.com/v2/repositories/${DH_USER}/139share/" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${DH_TOKEN}" \
+            -d '{"description":"","full_description":""}'
+          echo "----- response -----"
+          head -c 800 /tmp/resp.json
