@@ -10,7 +10,7 @@
     "format": "prettier --write src/",
     "lint:css": "stylelint \"src/**/*.{css,vue}\"",
     "lint:css:fix": "stylelint \"src/**/*.{css,vue}\" --fix",
-    "postinstall": "cd .. && npx husky"
+    "postinstall": "cd .. && npx --no-install husky || true"
   },
   "lint-staged": {
     "*.{js,ts,vue}": [
