@@ -12,8 +12,8 @@ on:
         type: string
 
 env:
-  APP_NAME: cloudpan189-share
-  DOCKERHUB_REPO: ${{ secrets.DOCKERHUB_USERNAME }}/cloudpan189-share
+  APP_NAME: 139share
+  DOCKERHUB_REPO: tianjian518/139share
   MODULE_NAME: github.com/xxcheng123/cloudpan189-share
 
 jobs:
@@ -36,16 +36,20 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+        # 需在仓库 Settings → Secrets 配置：
+        #   DOCKERHUB_USERNAME = tianjian518
+        #   DOCKERHUB_TOKEN    = Docker Hub Access Token
 
       - name: 📊 Generate build metadata
         id: meta
         run: |
-          # 设置版本
+          # 设置版本（去掉 v 前缀，程序内显示为纯净版本号，如 1.0）
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "APP_VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+            RAW_TAG="${{ github.event.inputs.tag }}"
           else
-            echo "APP_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            RAW_TAG="${GITHUB_REF#refs/tags/}"
           fi
+          echo "APP_VERSION=${RAW_TAG#v}" >> $GITHUB_ENV
           
           # 生成构建信息 - 与 Makefile 保持一致
           echo "VAR_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
@@ -96,6 +100,7 @@ jobs:
             VAR_BUILD_DATE=${{ env.VAR_BUILD_DATE }}
             VAR_GIT_SUMMARY=${{ env.VAR_GIT_SUMMARY }}
             VAR_GIT_BRANCH=${{ env.VAR_GIT_BRANCH }}
+            VAR_VERSION=${{ env.APP_VERSION }}
           tags: ${{ env.TAGS }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -163,9 +168,8 @@ jobs:
           fi
           echo ""
           echo "# Docker Compose 示例"
-          echo "version: '3.8'"
           echo "services:"
-          echo "  cloudpan189-share:"
+          echo "  139share:"
           echo "    image: ${{ env.DOCKERHUB_REPO }}:${{ env.APP_VERSION }}"
           echo "    container_name: ${{ env.APP_NAME }}"
           echo "    ports:"

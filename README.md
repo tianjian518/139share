@@ -1,13 +1,15 @@
-# CloudPan189 Share
+# 139share
 
-一个基于天翼云盘的文件分享和管理系统，提供 WebDAV 接口和 Web 管理界面。
+一个基于移动云盘（139）/天翼云盘的文件分享和管理系统，提供 WebDAV 接口、strm 生成和 Web 管理界面。
 
-## 🚧 提示
-自动刷新有点问题，正在重构，有问题先提issue
+> **版本：1.0**
+>
+> 专为分享链接播放场景优化的发行版：把云盘分享链接直接映射为 WebDAV / strm / HLS 播放地址。
+> 云盘凭据在「系统设置」页面填写，**无需配置环境变量**。
 
 ## 🚀 项目简介
 
-CloudPan189 Share 是一款专为天翼云盘设计的智能文件分享管理工具。该系统能够将天翼云盘的分享链接转换为标准的目录结构，并通过 WebDAV 协议提供统一的文件访问接口。
+139share 是一款面向云盘分享链接的智能文件分享管理工具。它能把云盘分享链接转换为标准的目录结构，并通过 WebDAV 协议提供统一的文件访问接口，同时支持生成 strm 文件供影视端直接播放。
 
 ## ✨ 核心功能
 
@@ -42,12 +44,12 @@ CloudPan189 Share 是一款专为天翼云盘设计的智能文件分享管理�
 
 ```sh
 docker run -d \
-  --name cloudpan189-share \
+  --name 139share \
   -p 12395:12395 \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/media_dir:/app/media_dir \
   --restart unless-stopped \
-  xxcheng123/cloudpan189-share:latest
+  tianjian518/139share:1.0
 ```
 更多请参考文档：[CloudPan189 Share 快速开始文档](docs/1.quick_start.md)
 
@@ -113,8 +115,8 @@ http://localhost:12395/dav
 
 ### 1. 克隆项目
 ```bash
-git clone https://github.com/xxcheng123/cloudpan189-share.git
-cd cloudpan189-share
+git clone https://github.com/tianjian518/139share.git
+cd 139share
 ```
 
 ### 2. 后端部署
@@ -173,7 +175,7 @@ cd fe && npm run dev
 
 ### 项目结构
 ```
-cloudpan189-share/
+139share/
 ├── cmd/                 # 主程序入口
 ├── configs/             # 配置管理
 ├── etc/                 # 配置文件

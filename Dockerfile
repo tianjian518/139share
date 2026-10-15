@@ -51,6 +51,7 @@ ARG VAR_COMMIT
 ARG VAR_BUILD_DATE
 ARG VAR_GIT_SUMMARY
 ARG VAR_GIT_BRANCH
+ARG VAR_VERSION=1.0
 ARG OUTPUT_DIR=/app
 ARG BINARY_NAME=share
 
@@ -59,10 +60,11 @@ RUN echo "Building for $TARGETOS/$TARGETARCH on $BUILDPLATFORM" && \
     GOOS=$TARGETOS GOARCH=$TARGETARCH CGO_ENABLED=0 \
     go build \
     -ldflags="-s -w \
-              -X ${MODULE_NAME}/configs.Commit=${VAR_COMMIT} \
-              -X ${MODULE_NAME}/configs.BuildDate=${VAR_BUILD_DATE} \
-              -X ${MODULE_NAME}/configs.GitSummary=${VAR_GIT_SUMMARY} \
-              -X ${MODULE_NAME}/configs.GitBranch=${VAR_GIT_BRANCH}" \
+              -X ${MODULE_NAME}/internal/configs.Commit=${VAR_COMMIT} \
+              -X ${MODULE_NAME}/internal/configs.BuildDate=${VAR_BUILD_DATE} \
+              -X ${MODULE_NAME}/internal/configs.GitSummary=${VAR_GIT_SUMMARY} \
+              -X ${MODULE_NAME}/internal/configs.GitBranch=${VAR_GIT_BRANCH} \
+              -X ${MODULE_NAME}/internal/configs.Version=${VAR_VERSION}" \
     -o ${OUTPUT_DIR}/${BINARY_NAME} ./cmd/main.go
 
 # Stage 3: Final image

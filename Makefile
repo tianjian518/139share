@@ -1,14 +1,15 @@
-PROJECT_NAME=cloudpan189-share
+PROJECT_NAME=139share
 MODULE_NAME=github.com/xxcheng123/cloudpan189-share
 VAR_COMMIT ?= $(shell git rev-parse HEAD)
 VAR_BUILD_DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 VAR_GIT_SUMMARY ?= $(shell git describe --tags --dirty --always)
 VAR_GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+VAR_VERSION ?= 1.0
 
 # 输出配置
 OUTPUT_DIR=output
 BINARY_NAME=share
-DOCKER_IMAGE=$(PROJECT_NAME):latest
+DOCKER_IMAGE=tianjian518/139share:1.0
 
 .PHONY: build build-frontend build-backend build-multi-arch clean clean-all
 .PHONY: docker-build docker-run docker-stop docker-clean docker-logs
@@ -34,10 +35,11 @@ build-backend:
 	@mkdir -p $(OUTPUT_DIR)
 	go mod tidy
 	GOOS=linux GOARCH=amd64 go build \
-		-ldflags="-X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME) ./cmd/main.go
 	@echo "✅ Backend build completed: $(OUTPUT_DIR)/$(BINARY_NAME)"
 
@@ -48,45 +50,51 @@ build-multi-arch:
 	go mod tidy
 	@echo "📦 Building for Linux AMD64..."
 	GOOS=linux GOARCH=amd64 go build \
-		-ldflags="-s -w -X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-s -w -X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME)-linux-amd64 ./cmd/main.go
 	@echo "📦 Building for Linux ARM64..."
 	GOOS=linux GOARCH=arm64 go build \
-		-ldflags="-s -w -X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-s -w -X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME)-linux-arm64 ./cmd/main.go
 	@echo "📦 Building for Linux ARMv7a..."
 	GOOS=linux GOARCH=arm GOARM=7 go build \
-		-ldflags="-s -w -X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-s -w -X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME)-linux-armv7a ./cmd/main.go
 	@echo "📦 Building for Windows AMD64..."
 	GOOS=windows GOARCH=amd64 go build \
-		-ldflags="-s -w -X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-s -w -X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME)-windows-amd64.exe ./cmd/main.go
 	@echo "📦 Building for macOS AMD64..."
 	GOOS=darwin GOARCH=amd64 go build \
-		-ldflags="-s -w -X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-s -w -X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME)-darwin-amd64 ./cmd/main.go
 	@echo "📦 Building for macOS ARM64..."
 	GOOS=darwin GOARCH=arm64 go build \
-		-ldflags="-s -w -X $(MODULE_NAME)/configs.Commit=$(VAR_COMMIT) \
-		          -X $(MODULE_NAME)/configs.BuildDate=$(VAR_BUILD_DATE) \
-		          -X $(MODULE_NAME)/configs.GitSummary=$(VAR_GIT_SUMMARY) \
-		          -X $(MODULE_NAME)/configs.GitBranch=$(VAR_GIT_BRANCH)" \
+		-ldflags="-s -w -X $(MODULE_NAME)/internal/configs.Commit=$(VAR_COMMIT) \
+		          -X $(MODULE_NAME)/internal/configs.BuildDate=$(VAR_BUILD_DATE) \
+		          -X $(MODULE_NAME)/internal/configs.GitSummary=$(VAR_GIT_SUMMARY) \
+		          -X $(MODULE_NAME)/internal/configs.GitBranch=$(VAR_GIT_BRANCH) \
+                       -X $(MODULE_NAME)/internal/configs.Version=$(VAR_VERSION)" \
 		-o $(OUTPUT_DIR)/$(BINARY_NAME)-darwin-arm64 ./cmd/main.go
 	@echo "✅ Multi-architecture build completed!"
 	@ls -la $(OUTPUT_DIR)/

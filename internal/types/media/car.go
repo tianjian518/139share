@@ -17,6 +17,8 @@ type WriterCar interface {
 	GetPath() string
 	// GetName 获取本级文件名
 	GetName() string
+	// SetPath 整体替换 car 指向的相对路径（用于遍历开始时归一化挂载点路径）
+	SetPath(filePath string) WriterCar
 }
 
 func NewWriterCar(rootPath string, conflictPolicy FileConflictPolicy, baseURL string) WriterCar {
@@ -72,4 +74,18 @@ func (c *writerCar) GetPath() string {
 
 func (c *writerCar) GetName() string {
 	return path.Base(c.fullPath)
+}
+
+// SetPath 用给定路径整体替换本 car 的相对路径，返回新 car（不修改原 car）。
+// 用于遍历挂载点前把「挂载点 FullPath」归一化：
+// 挂载点末段若与云盘根节点同名，剥掉末段，避免同一目录名在 strm 路径里出现两次。
+func (c *writerCar) SetPath(filePath string) WriterCar {
+	filePath = strings.TrimPrefix(filePath, "/")
+
+	return &writerCar{
+		rootPath:       c.rootPath,
+		conflictPolicy: c.conflictPolicy,
+		baseURL:        c.baseURL,
+		fullPath:       path.Clean(filePath),
+	}
 }
