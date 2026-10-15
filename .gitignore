@@ -1,0 +1,25 @@
+/logs
+/output
+/data/share.db
+/data
+session.json
+.idea
+.vscode
+.env
+/media_files
+
+datadir
+media_dir
+package-lock.json
+.clinerules
+.DS_Store
+
+fe/node_modules
+fe/llm-prompt.txt
+fe/dist
+fe/.idea
+
+# 本地构建/打包产物（勿提交）
+*.tar
+*.tar.gz
+*.tar.xz
