@@ -9,12 +9,14 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 # 设置 npm 为淘宝镜像
 RUN npm config set registry https://registry.npmmirror.com
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 # 设置 pnpm 为淘宝镜像
 RUN pnpm config set registry https://registry.npmmirror.com
 
 COPY fe/package.json fe/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+# --ignore-scripts: 跳过 postinstall（husky 装 git hooks，在容器里必然失败并中断构建）
+#                  前端为纯 JS 项目，无原生依赖需要编译，跳过脚本安全
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 COPY fe/ ./
 
